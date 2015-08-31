@@ -60,7 +60,6 @@ echo "chroot edit dpkg-query -W --showformat='${Package} ${Version}\n' > extract
 sudo cp extract-cd/casper/filesystem.manifest extract-cd/casper/filesystem.manifest-desktop
 sudo sed -i '/ubiquity/d' extract-cd/casper/filesystem.manifest-desktop
 sudo sed -i '/casper/d' extract-cd/casper/filesystem.manifest-desktop
-sudo ls -la extract-cd/casper/
 sudo rm extract-cd/casper/filesystem.squashfs
 sudo mksquashfs edit extract-cd/casper/filesystem.squashfs
 ISO_SIZE=`sudo du -sx --block-size=1 edit | cut -f1`
