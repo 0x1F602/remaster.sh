@@ -39,8 +39,11 @@ sudo mount -o bind /dev/pts edit/dev/pts
 # Step 4:
 # Normally this is where you'd do your customizations.
 # I recommend copying from your main system's /etc/apt/sources.list to your ISO's sources.list.
-sudo echo "SUDO Now make customizations from the CLI"
-sudo echo "SUDO You may have to copy from your /etc/apt/sources.list to use apt properly"
+echo "Now make customizations from the CLI"
+echo "If you want to replace the desktop wallpaper, use the instructions related to your window manager. You may have to replace the image somewhere under /usr/share"
+echo "If you need to copy in new files to the ISO, use another terminal to copy to remaster/livecdtmp/extract-cd/ as root"
+echo "To use apt-get properly, you may have to copy from your /etc/apt/sources.list to this ISO"
+echo "When you are done, just type 'exit' to continue the process"
 sudo chroot edit
 
 # Step 5:
@@ -53,6 +56,12 @@ sudo chroot edit umount /sys
 sudo umount mnt
 sudo umount edit/run
 sudo umount edit/dev/pts
+
+echo "If you want to, you can enter kernel commands or other changes from outside of the ISO"
+echo "If you want to turn off the 'try or install' screen, use these instructions: http://askubuntu.com/a/47613"
+echo "isolinux.cfg and txt.cfg are in extract-cd/isolinux"
+echo "If not, type exit again to begin the ISO creation process"
+bash
 
 # Step 6:
 sudo chmod +w extract-cd/casper/filesystem.manifest
