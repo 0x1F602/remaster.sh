@@ -1,7 +1,18 @@
 #!/bin/bash
 
+# leave these here for backwards compat ^_^
 ORIGINAL_ISO_NAME=$1
 NEW_ISO_NAME=$2
+
+for term in $@; do
+	case $term in
+		--iniso=*)
+			ORIGINAL_ISO_NAME=${term#--iniso=}
+			;;
+		--outiso=*)
+			NEW_ISO_NAME=${term#--outiso=}
+	esac
+done
 
 echo "Installing or updating squashfs-tools"
 sudo apt-get update && sudo apt-get install squashfs-tools
