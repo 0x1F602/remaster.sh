@@ -54,6 +54,11 @@ for term in $@; do
 			;;
 		--help)
 			printhelp
+			exit
+			;;
+		*)
+			echo "Unknown option $term"
+			exit 98
 			;;
 	esac
 done
@@ -129,7 +134,7 @@ sudo umount edit/dev/pts
 
 # =======
 read -p "Are you happy with these changes? > " resp
-[[ $resp =~ $yespat ]] && {ISOTASK=customizekernel}
+[[ $resp =~ $yespat ]] && { ISOTASK=customizekernel; }
 echo "You can re-run this step by executing '$0 --task=customizeiso'" >&2
 } # ====================================
 
@@ -142,7 +147,7 @@ bash
 
 # =======
 read -p "Are you happy with these changes? > " resp
-[[ $resp =~ $yespat ]] && {ISOTASK=buildiso}
+[[ $resp =~ $yespat ]] && { ISOTASK=buildiso; }
 echo "You can re-run this step by executing '$0 --task=customizekernel'" >&2
 } # ====================================
 
