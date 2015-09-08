@@ -3,6 +3,7 @@
 # leave these here for backwards compat ^_^
 ORIGINAL_ISO_NAME=$1
 NEW_ISO_NAME=$2
+yespat='^(yes|y|YES|Y|aye?|AYE?)$'
 
 for term in $@; do
 	case $term in
@@ -14,8 +15,10 @@ for term in $@; do
 	esac
 done
 
-echo "Installing or updating squashfs-tools"
-sudo apt-get update && sudo apt-get install squashfs-tools
+read -p "Install pre-reqs? > " resp && [[ $resp =~ $yespat ]] && {
+	echo "Installing or updating squashfs-tools and syslinux"
+	sudo apt-get update && sudo apt-get install squashfs-tools syslinux
+}
 
 # Step 1:
 # Make a parent directory for our Live USB
@@ -95,7 +98,9 @@ sudo nano extract-cd/README.diskdefines
 sudo rm extract-cd/md5sum.txt
 echo "find extract-cd/ -type f -print0 | xargs -0 md5sum | grep -v extract-cd/isolinux/boot.cat | tee extract-cd/md5sum.txt" | sudo sh >> ./remaster.log
 IMAGE_NAME='Custom ISO'
-sudo mkisofs -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../$2 extract-cd/
-sudo chmod 775 ../$2
+sudo mkisofs -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../$NEW_ISO_NAME extract-cd/
+sudo chmod 775 ../$NEW_ISO_NAME
+cd ..
+isohybrid $NEW_ISO_NAME
 
 echo "You can use root permissions to delete ./livecdtmp now."
