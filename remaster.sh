@@ -4,6 +4,42 @@
 ORIGINAL_ISO_NAME=$1
 NEW_ISO_NAME=$2
 yespat='^(yes|y|YES|Y|aye?|AYE?)$'
+ISOTASK=mountiso
+
+function printhelp {
+cat <<EOHELP
+
+remaster.sh
+
+Originally by Pat Natali https://github.com/beta0x64/remaster.sh
+With contributions by Tai Kedzierski https://github.com/taikedz/remaster.sh
+
+Usage:
+
+	$0 path/to/old.iso path/to/new.iso [--entry=ENTRYPOINT]
+	$0 --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
+
+ENTRYPOINT is a flag at which you can resume a function of the script. The supported entry points are:
+
+mountiso
+	Starts the process by mounting the original ISO,
+	and proceeds through the rest of the script
+
+customizeiso
+	Re-starts the ISO cusotmization step,
+	and proceeds through the rest of the script
+
+customizekernel
+	Re-starts the post-ISO customization step,
+	and proceeds through the rest of the script
+
+buildiso
+	Re-builds the ISO from the currrent state.
+	Requires that the previous steps to have been run before
+	and for ./livecdtemp to not have been removed or broken
+
+EOHELP
+}
 
 for term in $@; do
 	case $term in
@@ -12,6 +48,13 @@ for term in $@; do
 			;;
 		--outiso=*)
 			NEW_ISO_NAME=${term#--outiso=}
+			;;
+		--entry=*)
+			ISOTASK=${term#--entry=}
+			;;
+		--help)
+			printhelp
+			;;
 	esac
 done
 
@@ -20,6 +63,8 @@ read -p "Install pre-reqs? > " resp && [[ $resp =~ $yespat ]] && {
 	sudo apt-get update && sudo apt-get install squashfs-tools syslinux
 }
 
+
+[[ $ISOTASK = 'mountiso' ]] && {
 # Step 1:
 # Make a parent directory for our Live USB
 mkdir -p ./livecdtmp
@@ -34,7 +79,7 @@ fi
 
 
 # Step 2:
-mkdir mnt
+mkdir -p mnt
 echo "Logging into root"
 sudo su -c "echo 'SUDO Logged in'"
 # Mount the ISO as a loop filesystem to ./livecdtmp/mnt
@@ -47,6 +92,10 @@ sudo rsync --exclude=/casper/filesystem.squashfs -a mnt/ extract-cd
 sudo unsquashfs mnt/casper/filesystem.squashfs
 sudo mv squashfs-root edit
 
+ISOTASK=customizeiso
+} # ====================================
+
+[[ $ISOTASK = 'customizeiso' ]] && {
 # Step 3:
 # This makes our terminal's "perspective" come from ./livecdtmp/edit/
 sudo mount -o bind /run edit/run
@@ -78,12 +127,26 @@ sudo umount mnt
 sudo umount edit/run
 sudo umount edit/dev/pts
 
+# =======
+read -p "Are you happy with these changes? > " resp
+[[ $resp =~ $yespat ]] && {ISOTASK=customizekernel}
+echo "You can re-run this step by executing '$0 --task=customizeiso'" >&2
+} # ====================================
+
+[[ $ISOTASK = 'customizekernel' ]] && {
 echo "If you want to, you can enter kernel commands or other changes from outside of the ISO"
 echo "If you want to turn off the 'try or install' screen, use these instructions: http://askubuntu.com/a/47613"
 echo "isolinux.cfg and txt.cfg are in extract-cd/isolinux"
 echo "If not, type exit again to begin the ISO creation process"
 bash
 
+# =======
+read -p "Are you happy with these changes? > " resp
+[[ $resp =~ $yespat ]] && {ISOTASK=buildiso}
+echo "You can re-run this step by executing '$0 --task=customizekernel'" >&2
+} # ====================================
+
+[[ $ISOTASK = 'buildiso' ]] && {
 # Step 6:
 sudo chmod +w extract-cd/casper/filesystem.manifest
 echo "chroot edit dpkg-query -W --showformat='${Package} ${Version}\n' > extract-cd/casper/filesystem.manifest" | sudo sh >> ./remaster.log
@@ -100,7 +163,9 @@ echo "find extract-cd/ -type f -print0 | xargs -0 md5sum | grep -v extract-cd/is
 IMAGE_NAME='Custom ISO'
 sudo mkisofs -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../$NEW_ISO_NAME extract-cd/
 sudo chmod 775 ../$NEW_ISO_NAME
+
 cd ..
 isohybrid $NEW_ISO_NAME
 
 echo "You can use root permissions to delete ./livecdtmp now."
+}
