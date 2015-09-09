@@ -57,7 +57,7 @@ for term in $@; do
 			exit
 			;;
 		*)
-			echo "Unknown option $term"
+			[[ ! -f "$term" ]] && echo "Unknown option $term"
 			exit 98
 			;;
 	esac
