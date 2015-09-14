@@ -8,9 +8,16 @@ sudo apt-get update && sudo apt-get install squashfs-tools
 
 # Step 1:
 # Make a parent directory for our Live USB
-mkdir ./livecdtmp
-cp $ORIGINAL_ISO_NAME ./livecdtmp
+mkdir -p ./livecdtmp
 cd ./livecdtmp
+
+if [[ -f "../$ORIGINAL_ISO_NAME" ]]; then
+	ORIGINAL_ISO_NAME="../$ORIGINAL_ISO_NAME"
+elif [[ ! -f "$ORIGINAL_ISO_NAME" ]]; then
+	echo "$PWD/$ORIGINAL_FILE_NAME cannot be found. Please specify its full path." >&2
+	exit 2
+fi
+
 
 # Step 2:
 mkdir mnt
