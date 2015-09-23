@@ -16,56 +16,56 @@ With contributions by Tai Kedzierski https://github.com/taikedz/remaster.sh
 
 Usage:
 
-	$0 path/to/old.iso path/to/new.iso [--entry=ENTRYPOINT]
-	$0 --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
+    $0 path/to/old.iso path/to/new.iso [--entry=ENTRYPOINT]
+    $0 --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
 
 ENTRYPOINT is a flag at which you can resume a function of the script. The supported entry points are:
 
 mountiso
-	Starts the process by mounting the original ISO,
-	and proceeds through the rest of the script
+    Starts the process by mounting the original ISO,
+    and proceeds through the rest of the script
 
 customizeiso
-	Re-starts the ISO cusotmization step,
-	and proceeds through the rest of the script
+    Re-starts the ISO cusotmization step,
+    and proceeds through the rest of the script
 
 customizekernel
-	Re-starts the post-ISO customization step,
-	and proceeds through the rest of the script
+    Re-starts the post-ISO customization step,
+    and proceeds through the rest of the script
 
 buildiso
-	Re-builds the ISO from the currrent state.
-	Requires that the previous steps to have been run before
-	and for ./livecdtemp to not have been removed or broken
+    Re-builds the ISO from the currrent state.
+    Requires that the previous steps to have been run before
+    and for ./livecdtemp to not have been removed or broken
 
 EOHELP
 }
 
 for term in $@; do
-	case $term in
-		--iniso=*)
-			ORIGINAL_ISO_NAME=${term#--iniso=}
-			;;
-		--outiso=*)
-			NEW_ISO_NAME=${term#--outiso=}
-			;;
-		--entry=*)
-			ISOTASK=${term#--entry=}
-			;;
-		--help)
-			printhelp
-			exit
-			;;
-		*)
-			[[ ! -f "$term" ]] && echo "Unknown option $term"
-			exit 98
-			;;
-	esac
+    case $term in
+        --iniso=*)
+            ORIGINAL_ISO_NAME=${term#--iniso=}
+            ;;
+        --outiso=*)
+            NEW_ISO_NAME=${term#--outiso=}
+            ;;
+        --entry=*)
+            ISOTASK=${term#--entry=}
+            ;;
+        --help)
+            printhelp
+            exit
+            ;;
+        *)
+            [[ ! -f "$term" ]] && echo "Unknown option $term"
+            exit 98
+            ;;
+    esac
 done
 
 read -p "Install pre-reqs? > " resp && [[ $resp =~ $yespat ]] && {
-	echo "Installing or updating squashfs-tools and syslinux"
-	sudo apt-get update && sudo apt-get install squashfs-tools syslinux
+    echo "Installing or updating squashfs-tools and syslinux"
+    sudo apt-get update && sudo apt-get install squashfs-tools syslinux
 }
 
 
@@ -76,10 +76,10 @@ mkdir -p ./livecdtmp
 cd ./livecdtmp
 
 if [[ -f "../$ORIGINAL_ISO_NAME" ]]; then
-	ORIGINAL_ISO_NAME="../$ORIGINAL_ISO_NAME"
+    ORIGINAL_ISO_NAME="../$ORIGINAL_ISO_NAME"
 elif [[ ! -f "$ORIGINAL_ISO_NAME" ]]; then
-	echo "$PWD/$ORIGINAL_FILE_NAME cannot be found. Please specify its full path." >&2
-	exit 2
+    echo "$PWD/$ORIGINAL_FILE_NAME cannot be found. Please specify its full path." >&2
+    exit 2
 fi
 
 
