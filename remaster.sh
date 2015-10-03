@@ -41,6 +41,11 @@ buildiso
 EOHELP
 }
 
+if [[ -z $@ ]]; then
+    printhelp
+    exit
+fi
+
 for term in $@; do
     case $term in
         --iniso=*)
@@ -63,6 +68,11 @@ for term in $@; do
     esac
 done
 
+if [[ -z $ORIGINAL_ISO_NAME || -z $NEW_ISO_NAME ]]; then
+    printhelp
+    exit
+fi
+
 read -p "Install pre-reqs? > " resp && [[ $resp =~ $yespat ]] && {
     echo "Installing or updating squashfs-tools and syslinux"
     sudo apt-get update && sudo apt-get install squashfs-tools syslinux
@@ -78,7 +88,7 @@ cd ./livecdtmp
 if [[ -f "../$ORIGINAL_ISO_NAME" ]]; then
     ORIGINAL_ISO_NAME="../$ORIGINAL_ISO_NAME"
 elif [[ ! -f "$ORIGINAL_ISO_NAME" ]]; then
-    echo "$PWD/$ORIGINAL_FILE_NAME cannot be found. Please specify its full path." >&2
+    echo "$PWD/$ORIGINAL_FILE_NAME cannot be found. Please specify its full path with the --iniso parameter." >&2
     exit 2
 fi
 
@@ -117,7 +127,7 @@ sudo mount -o bind /dev/pts edit/dev/pts
 echo "Now make customizations from the CLI"
 echo "If you want to replace the desktop wallpaper, use the instructions related to your window manager. You may have to replace the image somewhere under /usr/share"
 echo "If you need to copy in new files to the ISO, use another terminal to copy to remaster/livecdtmp/extract-cd/ as root"
-echo "To use apt-get properly, you may have to copy from your /etc/apt/sources.list to this ISO"
+echo "To use apt-get properly, you may have to copy from your /etc/apt/sources.list to this ISO, then run apt-get update and finally resolvconf -u to connect to the internet"
 echo "When you are done, just type 'exit' to continue the process"
 sudo chroot edit
 
