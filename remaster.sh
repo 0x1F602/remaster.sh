@@ -27,7 +27,6 @@ function happy_with_changes {
         happy=true
         ISOTASK=$customization_task;
     }
-    echo $unhappy
     echo "You can re-run this step by executing '$0 --entry $customization_task'" >&2
 }
 
