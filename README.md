@@ -14,7 +14,9 @@ Usage:
   
   $0 --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
   
-ENTRYPOINT is a flag at which you can resume a function of the script. The supported entry points are:
+ENTRYPOINT is a flag at which you can resume a function of the script. 
+
+The supported entry points are:
 
 mountiso
 
