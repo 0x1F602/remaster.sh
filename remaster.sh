@@ -68,7 +68,6 @@ print_separator
     happy=false
     ISOTASK=customizekernel
     do_we_continue
-echo "customizeiso $ISOTASK"
 } 
 
 [[ $ISOTASK = 'customizekernel' ]] && {
