@@ -1,7 +1,7 @@
 # remaster.sh
 Remaster an Ubuntu ISO from Ubuntu 14.04+
 
-Requires bash, an internet connection (for apt-get), and an iso to remaster.
+Requires bash, sudo access, an internet connection (for apt-get), and an iso to remaster.
 
 ```bash
 Originally by Pat Natali https://github.com/beta0x64/remaster.sh
@@ -10,9 +10,9 @@ With contributions by Tai Kedzierski https://github.com/taikedz/remaster.sh
 
 Usage:
 
-  $0 --iniso old.iso --outiso new.iso [--entry ENTRYPOINT]
+  ./remaster.sh --iniso old.iso --outiso new.iso [--entry ENTRYPOINT]
   
-  $0 --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
+  ./remaster.sh --iniso=old.iso --outiso=new.iso [--entry=ENTRYPOINT]
   
 ENTRYPOINT is a flag at which you can resume a function of the script. 
 
