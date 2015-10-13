@@ -3,6 +3,7 @@ Remaster an Ubuntu ISO from Ubuntu 14.04+
 
 Requires bash, an internet connection (for apt-get), and an iso to remaster.
 
+```bash
 Originally by Pat Natali https://github.com/beta0x64/remaster.sh
 
 With contributions by Tai Kedzierski https://github.com/taikedz/remaster.sh
@@ -40,3 +41,4 @@ buildiso
   Requires that the previous steps to have been run before
   
   and for ./livecdtemp to not have been removed or broken
+```
