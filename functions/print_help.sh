@@ -28,7 +28,7 @@ customizekernel
 buildiso
     Re-builds the ISO from the currrent state.
     Requires that the previous steps to have been run before
-    and for ./livecdtemp to not have been removed or broken
+    and for ./livecdtmp to not have been removed or broken
 
 EOHELP
 
